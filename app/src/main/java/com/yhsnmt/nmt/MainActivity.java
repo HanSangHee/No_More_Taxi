@@ -20,8 +20,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final TextView textView = findViewById(R.id.textView);
-
-
         textView.setText("start");
 
         ODsayService oDsayService = ODsayService.init(this, a);
@@ -30,12 +28,13 @@ public class MainActivity extends AppCompatActivity {
         OnResultCallbackListener onResultCallbackListener = new OnResultCallbackListener() {
             @Override
             public void onSuccess(ODsayData oDsayData, API api) {
-                Log.d("Test",oDsayData.getJson().toString());
+
 
                 try{
-                    if(api==API.POINT_SEARCH) {
-                        String station = oDsayData.getJson().getJSONObject("result").getJSONArray("station").getString(0);
+                    if(api==API.SEARCH_PUB_TRANS_PATH) {
+                        String station = oDsayData.getJson().getJSONObject("result").getJSONArray("path").getString(0);
                         textView.setText("station information : "+ station);
+                        Log.d("Test",oDsayData.getJson().getJSONObject("result").toString());
                     }
                 } catch(JSONException e){
                     e.printStackTrace();
@@ -46,11 +45,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onError(int i, String s, API api) {
                 Log.d("Test", "Error");
-                if(api==API.POINT_SEARCH){
+                if(api==API.SEARCH_PUB_TRANS_PATH){
                     textView.setText(Integer.toString(i) +" + " + s + " + " + api );
                 }
             }
         };
-        oDsayService.requestPointSearch( "127.049495","37.556243", "1000" , "1:2" ,onResultCallbackListener);
+        oDsayService.requestSearchPubTransPath( "127.049495","37.556243", "127.126936754911", "37.5004198786564", "" ,"","", onResultCallbackListener);
     }
 }
