@@ -8,7 +8,7 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/logo"
-        android:label="No More Texi"
+        android:label="No More Taxi"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -18,7 +18,7 @@
 
         <activity
             android:name=".SplashActivity"
-            android:label="No more texi">
+            android:label="No More Taxi">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
