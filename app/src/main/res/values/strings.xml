@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">NMT</string>
+    <string name="app_name">No More Texi</string>
+    <string name="title_activity_destination">Map</string>
+    <string name="title_activity_splash">SplashActivity</string>
 </resources>

@@ -1,9 +1,14 @@
 package com.yhsnmt.nmt;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.odsay.odsayandroidsdk.API;
 import com.odsay.odsayandroidsdk.ODsayData;
 import com.odsay.odsayandroidsdk.ODsayService;
@@ -13,12 +18,26 @@ import org.json.JSONException;
 
 public class MainActivity extends AppCompatActivity {
 
+
+
     String a = "CjI+3L5fsV83FFBgkif3WjrvVKFCgsajnJxD9jYuRSU";
 
     @Override
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Button button = (Button) findViewById(R.id.Button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), DestinationActivity.class);
+                startActivity(intent);
+            }
+        });
+
         final TextView textView = findViewById(R.id.textView);
         textView.setText("start");
 
@@ -32,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
                 try{
                     if(api==API.SEARCH_PUB_TRANS_PATH) {
-                        String station = oDsayData.getJson().getJSONObject("result").getJSONArray("path").getString(0);
+                        String station = oDsayData.getJson().getJSONObject("result").getString("pointDistance");
                         textView.setText("station information : "+ station);
                         Log.d("Test",oDsayData.getJson().getJSONObject("result").toString());
                     }
