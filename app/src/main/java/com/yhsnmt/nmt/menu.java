@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ToggleButton;
 
-public class MenuActivity extends AppCompatActivity{
+public class menu extends AppCompatActivity{
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
