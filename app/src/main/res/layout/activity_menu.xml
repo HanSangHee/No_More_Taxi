@@ -59,6 +59,8 @@
         android:layout_above="@+id/imageView3"
         android:layout_marginBottom="-66dp"
         android:layout_toEndOf="@+id/tb1"
-        android:background="@drawable/settings" />
+
+        android:background="@drawable/settings"
+        android:layout_toRightOf="@+id/tb1" />
 
 </RelativeLayout>
