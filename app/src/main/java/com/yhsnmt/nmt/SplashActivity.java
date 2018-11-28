@@ -23,4 +23,5 @@ public class SplashActivity extends Activity{
     }
 }
 
+// 오프닝 화면 구현
 
