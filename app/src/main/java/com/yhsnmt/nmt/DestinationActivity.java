@@ -3,6 +3,7 @@ package com.yhsnmt.nmt;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
@@ -112,10 +113,14 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
                                     e.printStackTrace();
                                 }
 
-
-                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                intent.putExtra("latitude", latitude);
-                                intent.putExtra("longitude",longitude);
+                                String latit = Double.toString(latitude);
+                                String longit = Double.toString(longitude);
+                                SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = pref.edit();// editor에 put 하기
+                                editor.putString("latitude", latit);
+                                editor.putString("longitude", longit);
+                                editor.commit(); //완료한다.
+                                Intent intent = new Intent(getApplicationContext(), menu.class);
                                 startActivity(intent);
 
                                 // 위도 경도 정보를 4-ㄱ ,4-ㄴ으로 전달(목적 클래스 재지정 필요)
@@ -158,9 +163,14 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
                     e.printStackTrace();
                 }
 
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.putExtra("latitude", latitude);
-                intent.putExtra("longitude",longitude);
+                String latit = Double.toString(latitude);
+                String longit = Double.toString(longitude);
+                SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit();// editor에 put 하기
+                editor.putString("latitude", latit);
+                editor.putString("longitude", longit);
+                editor.commit(); //완료한다.
+                Intent intent = new Intent(getApplicationContext(), menu.class);
                 startActivity(intent);
 
                 // 위도 경도 정보를 4-ㄱ ,4-ㄴ으로 전달(목적 클래스 재지정 필요)
@@ -217,9 +227,14 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
                             e.printStackTrace();
                         }
 
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.putExtra("latitude", latitude);
-                        intent.putExtra("longitude",longitude);
+                        String latit = latitude;
+                        String longit = longitude;
+                        SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = pref.edit();// editor에 put 하기
+                        editor.putString("latitude", latit);
+                        editor.putString("longitude", longit);
+                        editor.commit(); //완료한다.
+                        Intent intent = new Intent(getApplicationContext(), menu.class);
                         startActivity(intent);
 
                         // 위도 경도 정보를 4-ㄱ ,4-ㄴ으로 전달(목적 클래스 재지정 필요)

@@ -15,7 +15,7 @@ public class SplashActivity extends Activity{
         Handler handler = new Handler();
         handler.postDelayed(new Runnable(){
             public void run(){
-                Intent intent = new Intent(getBaseContext(), DestinationActivity.class);
+                Intent intent = new Intent(getBaseContext(), menu.class);
                 startActivity(intent);
                 finish();
             }
