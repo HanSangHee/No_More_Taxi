@@ -2,6 +2,7 @@ package com.yhsnmt.nmt;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
@@ -56,7 +57,7 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
         setContentView(R.layout.activity_destination);
         editText = (EditText) findViewById(R.id.editText);
         button = (Button) findViewById(R.id.button);
-        current=(ImageButton)findViewById(R.id.current);
+        current= (ImageButton) findViewById(R.id.current);
 
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -71,6 +72,9 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
         current.setOnClickListener(new ImageButton.OnClickListener(){
             @Override
             public void onClick(View v) {
+
+                mMap.clear(); // 마커 제거
+
 
                 if (ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(getBaseContext(), "위치정보 권한을 허용해 주세요.", Toast.LENGTH_SHORT).show();
@@ -89,14 +93,33 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
                             //got last known location, in some rate situations this can be null
                             if (location != null) {
                                 //logic to handle location object
+                                MarkerOptions mOptions3 = new MarkerOptions();
                                 latitude = location.getLatitude();
                                 longitude = location.getLongitude();
 
                                 Log.d("위도", String.valueOf(latitude));
                                 Log.d("경도", String.valueOf(longitude));
-
                                 LatLng b = new LatLng(latitude, longitude);
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(b, 12));
+
+                                mOptions3.position(b);
+                                mOptions3.title("현위치!");
+                                mMap.addMarker(mOptions3);
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(b, 15));
+
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+
+
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                intent.putExtra("latitude", latitude);
+                                intent.putExtra("longitude",longitude);
+                                startActivity(intent);
+
+                                // 위도 경도 정보를 4-ㄱ ,4-ㄴ으로 전달(목적 클래스 재지정 필요)
+
                             }
                         }
                     });
@@ -106,15 +129,6 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
 
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(final GoogleMap googleMap) {
         mMap = googleMap;
@@ -122,8 +136,10 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
 
         // 맵 터치 이벤트 구현 //
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
             @Override
             public void onMapClick(LatLng point) {
+                mMap.clear(); // 마커 초기화
                 MarkerOptions mOptions = new MarkerOptions();
                 // 마커 타이틀
                 mOptions.title("마커 좌표");
@@ -136,6 +152,20 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
                 // 마커(핀) 추가
                 googleMap.addMarker(mOptions);
 
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("longitude",longitude);
+                startActivity(intent);
+
+                // 위도 경도 정보를 4-ㄱ ,4-ㄴ으로 전달(목적 클래스 재지정 필요)
+
+
             }
         });
         ////////////////////
@@ -144,6 +174,7 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
         button.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mMap.clear();
                 String str = editText.getText().toString();
                 List<Address> addressList = null;
                 try {
@@ -179,6 +210,20 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
                         mMap.addMarker(mOptions2);
                         // 해당 좌표로 화면 줌
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 15));
+
+                        try {
+                            Thread.sleep(1500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.putExtra("latitude", latitude);
+                        intent.putExtra("longitude",longitude);
+                        startActivity(intent);
+
+                        // 위도 경도 정보를 4-ㄱ ,4-ㄴ으로 전달(목적 클래스 재지정 필요)
+
                     }else{
                         Toast.makeText(getBaseContext(), "주소가 잘못되었습니다. 정확한 주소를 입력해주세요.", Toast.LENGTH_SHORT).show();
                     }
@@ -191,8 +236,6 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
 
         LatLng a = new LatLng(37.5572321, 127.04532189999998);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(a, 15));
-
-
 
     }
 
