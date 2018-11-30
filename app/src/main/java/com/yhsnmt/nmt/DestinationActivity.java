@@ -250,7 +250,7 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
         });
 
         LatLng a = new LatLng(37.5572321, 127.04532189999998);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(a, 15));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(a, 13));
 
     }
 

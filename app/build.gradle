@@ -36,4 +36,7 @@ dependencies {
     implementation project(':SDK_release_v1.0')
     implementation "com.google.android.gms:play-services-location:15.0.1"
     compile 'com.google.android.gms:play-services-location:11.6.0'
+
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+
 }

@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 public class menu extends AppCompatActivity{
@@ -25,8 +26,8 @@ public class menu extends AppCompatActivity{
 
         SharedPreferences pref;
         pref = getSharedPreferences("pref", MODE_PRIVATE);
-        String latitude = pref.getString("latitude",null); //해당값 불러오는 것, 해당값이 없을 경우 null호출
-        String longitude = pref.getString("longitude",null);
+        final String latitude = pref.getString("latitude",null); //해당값 불러오는 것, 해당값이 없을 경우 null호출
+        final String longitude = pref.getString("longitude",null);
 
 
 
@@ -36,10 +37,11 @@ public class menu extends AppCompatActivity{
         set.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), DestinationActivity.class);
+                Intent intent = new Intent(getApplicationContext(), setting.class);
                 startActivity(intent);
             }
         });
+
 
         mail.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,11 +80,18 @@ public class menu extends AppCompatActivity{
 
                 if(tb1.isChecked()){
 
+                    if ((latitude) == null) {
+                        Toast.makeText(getBaseContext(), "우측 상단 설정을 누르고 목적지를 설정해주세요", Toast.LENGTH_SHORT).show();
+
+                    }
+                    else{
+
                     tb1.setBackgroundDrawable(
 
-                            getResources().getDrawable(R.drawable.makon)
+                            getResources().getDrawable(R.drawable.makon));
 
-                    );
+                    }
+
 
                 }else{
 
@@ -106,13 +115,22 @@ public class menu extends AppCompatActivity{
 
             public void onClick(View v) {
 
+
+
                 if(tb2.isChecked()){
 
-                    tb2.setBackgroundDrawable(
+                    if ((latitude) == null) {
+                        Toast.makeText(getBaseContext(), "우측 상단 설정을 누르고 목적지를 설정해주세요", Toast.LENGTH_SHORT).show();
 
-                            getResources().getDrawable(R.drawable.haon)
+                    }
+                    else{
 
-                    );
+                        tb2.setBackgroundDrawable(
+
+                                getResources().getDrawable(R.drawable.haon));
+
+                    }
+
 
                 }else{
 
@@ -123,6 +141,7 @@ public class menu extends AppCompatActivity{
                     );
 
                 }
+
 
             }
 
