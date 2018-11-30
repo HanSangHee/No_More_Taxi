@@ -64,4 +64,13 @@
         android:background="@drawable/settings"
         android:layout_toRightOf="@+id/tb1" />
 
+    <Button
+        android:id="@+id/mail"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignTop="@+id/setting"
+        android:layout_toStartOf="@+id/tb1"
+        android:background="@android:drawable/ic_dialog_email"
+        android:layout_toLeftOf="@+id/tb1" />
+
 </RelativeLayout>

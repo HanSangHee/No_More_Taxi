@@ -20,7 +20,7 @@ public class menu extends AppCompatActivity{
         final ToggleButton tb2=findViewById(R.id.tb2);
         final Button route = findViewById(R.id.route);
         final Button set = findViewById(R.id.setting);
-
+        final Button mail = findViewById(R.id.mail);
 
 
         SharedPreferences pref;
@@ -41,6 +41,30 @@ public class menu extends AppCompatActivity{
             }
         });
 
+        mail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent emailIntent = new Intent(Intent.ACTION_SEND);
+
+                try {
+                    emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"koo3751@hanyang.ac.kr"});
+
+                    emailIntent.setType("text/html");
+                    emailIntent.setPackage("com.google.android.gm");
+                    if(emailIntent.resolveActivity(getPackageManager())!=null)
+                        startActivity(emailIntent);
+
+                    startActivity(emailIntent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                    emailIntent.setType("text/html");
+                    emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"koo3751@hanyang.ac.kr"});
+
+                    startActivity(Intent.createChooser(emailIntent, "Send Email"));
+                }
+            }
+        });
 
 
 
@@ -56,9 +80,7 @@ public class menu extends AppCompatActivity{
 
                     tb1.setBackgroundDrawable(
 
-                            getResources().
-
-                                    getDrawable(R.drawable.makon)
+                            getResources().getDrawable(R.drawable.makon)
 
                     );
 
@@ -66,9 +88,7 @@ public class menu extends AppCompatActivity{
 
                     tb1.setBackgroundDrawable(
 
-                            getResources().
-
-                                    getDrawable(R.drawable.makoff)
+                            getResources().getDrawable(R.drawable.makoff)
 
                     );
 
@@ -90,9 +110,7 @@ public class menu extends AppCompatActivity{
 
                     tb2.setBackgroundDrawable(
 
-                            getResources().
-
-                                    getDrawable(R.drawable.haon)
+                            getResources().getDrawable(R.drawable.haon)
 
                     );
 
@@ -100,9 +118,7 @@ public class menu extends AppCompatActivity{
 
                     tb2.setBackgroundDrawable(
 
-                            getResources().
-
-                                    getDrawable(R.drawable.haoff)
+                            getResources().getDrawable(R.drawable.haoff)
 
                     );
 
