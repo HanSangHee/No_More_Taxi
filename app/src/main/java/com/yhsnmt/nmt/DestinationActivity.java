@@ -44,6 +44,7 @@ import static android.app.ProgressDialog.show;
 
 public class DestinationActivity extends FragmentActivity implements OnMapReadyCallback {
 
+
     private GoogleMap mMap;
     private Geocoder geocoder;
     private Button button;
