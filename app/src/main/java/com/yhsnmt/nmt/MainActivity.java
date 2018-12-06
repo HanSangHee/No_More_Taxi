@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
                 try{
                     if(api==API.SEARCH_PUB_TRANS_PATH) {
-                        String station = oDsayData.getJson().getJSONObject("result").getString("pointDistance");
+                        String station = oDsayData.getJson().getJSONObject("result").getJSONObject("path").getJSONObject("Info").getString("firstStartStation");
                         textView.setText("station information : "+ station);
                         Log.d("Test",oDsayData.getJson().getJSONObject("result").toString());
                     }

@@ -125,7 +125,7 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
                                         startActivity(intent);
                                         finish();
                                     }
-                                }, 2000);
+                                }, 2500);
                                 // 위도 경도 정보를 4-ㄱ ,4-ㄴ으로 전달(목적 클래스 재지정 필요)
 
                             }
@@ -178,7 +178,7 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
                         startActivity(intent);
                         finish();
                     }
-                }, 2000);
+                }, 2500);
 
 
                 // 위도 경도 정보를 4-ㄱ ,4-ㄴ으로 전달(목적 클래스 재지정 필요)
@@ -245,7 +245,7 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
                                 startActivity(intent);
                                 finish();
                             }
-                        }, 2000);
+                        }, 2500);
 
                         // 위도 경도 정보를 4-ㄱ ,4-ㄴ으로 전달(목적 클래스 재지정 필요)
 

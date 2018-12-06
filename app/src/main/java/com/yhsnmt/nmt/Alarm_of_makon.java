@@ -12,7 +12,7 @@ import android.widget.TimePicker;
 import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.TimePicker.OnTimeChangedListener;
 
-public class Alarm_manager extends Activity implements OnDateChangedListener, OnTimeChangedListener {
+public class Alarm_of_makon extends Activity implements OnDateChangedListener, OnTimeChangedListener {
 
     // 알람 메니저
     private AlarmManager mManager;
