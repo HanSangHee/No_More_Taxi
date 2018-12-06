@@ -136,25 +136,25 @@ public class menu extends AppCompatActivity {
 
                     } else {
 
-                        tb1.setBackgroundDrawable(getResources().getDrawable(R.drawable.haon));
-//                        mFusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-//                            @Override
-//                            public void onSuccess(Location location) {
-//
-//                                if (location != null) {
-//                                    //logic to handle location object
-//                                    Double latitude = location.getLatitude();
-//                                    Double longitude = location.getLongitude();
-//                                    sla = Double.toString(latitude);
-//                                    slo = Double.toString(longitude);
-//
-//                                    mODsayService.requestSearchPubTransPath(slo, sla, longit, latit,"","","1", onResultCallbackListener1);
-//
-//
-//
-//                                }
-//                            }
-//                        });
+                        tb1.setBackgroundDrawable(getResources().getDrawable(R.drawable.makon));
+                        mFusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+
+                                if (location != null) {
+                                    //logic to handle location object
+                                    Double latitude = location.getLatitude();
+                                    Double longitude = location.getLongitude();
+                                    sla = Double.toString(latitude);
+                                    slo = Double.toString(longitude);
+
+                                    mODsayService.requestSearchPubTransPath(slo, sla, longit, latit,"","","1", onResultCallbackListener1);
+
+
+
+                                }
+                            }
+                        });
 
 
 
@@ -167,7 +167,7 @@ public class menu extends AppCompatActivity {
 
                     tb1.setBackgroundDrawable(
 
-                            getResources().getDrawable(R.drawable.haoff)
+                            getResources().getDrawable(R.drawable.makoff)
 
 
                     );
@@ -217,11 +217,11 @@ public class menu extends AppCompatActivity {
 
 
                         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, // 등록할 위치제공자
-                                100, // 통지사이의 최소 시간간격 (miliSecond)
+                                1000, // 통지사이의 최소 시간간격 (miliSecond)
                                 1, // 통지사이의 최소 변경거리 (m)
                                 mLocationListener);
                         lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, // 등록할 위치제공자
-                                100, // 통지사이의 최소 시간간격 (miliSecond)
+                                1000, // 통지사이의 최소 시간간격 (miliSecond)
                                 1, // 통지사이의 최소 변경거리 (m)
                                 mLocationListener);
 
@@ -244,8 +244,9 @@ public class menu extends AppCompatActivity {
 
                     );
 
-                    lm.removeUpdates(mLocationListener);  //  미수신할때는 반드시 자원해체를 해주어야 한다.
-                    removeNotification();
+                    lm.removeUpdates(mLocationListener);  //  미수신할때는 반드시 자원해체
+
+                    removeNotification(); // 해제 시 푸시 제거
 
 
 
@@ -291,7 +292,7 @@ public class menu extends AppCompatActivity {
             System.out.println("출발지 경도값 : " + slo);
 
 
-            mODsayService.requestSearchPubTransPath(slo, sla, longit, latit,"","","", onResultCallbackListener);
+            mODsayService.requestSearchPubTransPath(slo, sla, longit, latit,"","","1", onResultCallbackListener);
 
         }
 
@@ -311,34 +312,46 @@ public class menu extends AppCompatActivity {
         }
 
     };
-//    OnResultCallbackListener onResultCallbackListener1 = new OnResultCallbackListener() {
-//        @Override
-//        public void onSuccess(ODsayData oDsayData, API api) {
-//
-//
-//            try {
-//                if (api == API.SEARCH_PUB_TRANS_PATH) {
-//                    String Distance = oDsayData.getJson().getJSONObject("result").getJSONArray("path").getString(0);
-//
-//                    Log.d("점검", Distance);
-//
-//
-//
-//                }
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//
-//
-//        @Override
-//        public void onError(int i, String s, API api) {
-//            Log.d("Test", "Error");
-//            if (api == API.SEARCH_PUB_TRANS_PATH) {
-//            }
-//        }
-//    };
+    OnResultCallbackListener onResultCallbackListener1 = new OnResultCallbackListener() {
+        @Override
+        public void onSuccess(ODsayData oDsayData, API api) {
+
+
+            try {
+                if (api == API.SEARCH_PUB_TRANS_PATH) {
+
+                    String station = oDsayData.getJson().getJSONObject("result").getJSONArray("path").getString(0);
+                    String target1 = "firstStartStation";
+                    String target2 = "lastEndStation\":\"";
+                    int target_num1 = station.indexOf(target1)+20;
+                    int target_num2 = station.indexOf("\",\"lastEnd");
+                    int target_num3 = station.indexOf(target2)+17;
+                    int target_num4 = station.indexOf("\",\"totalWalkTime\":");
+                    String result1 = station.substring(target_num1, target_num2);
+                    String result2 = station.substring(target_num3, target_num4);
+
+
+
+                    Log.d("나와라얍1", result1);
+                    Log.d("나와라얍2", result2);
+
+
+
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+
+        @Override
+        public void onError(int i, String s, API api) {
+            Log.d("Test", "Error");
+            if (api == API.SEARCH_PUB_TRANS_PATH) {
+            }
+        }
+    };
 
 
     OnResultCallbackListener onResultCallbackListener = new OnResultCallbackListener() {
@@ -349,7 +362,6 @@ public class menu extends AppCompatActivity {
             try {
                 if (api == API.SEARCH_PUB_TRANS_PATH) {
                     String Distance = oDsayData.getJson().getJSONObject("result").getString("pointDistance");
-                    Log.d("원하는 값은", Distance);
 
                 }
             } catch (JSONException e) {
@@ -377,7 +389,7 @@ public class menu extends AppCompatActivity {
 
 
         builder.setSmallIcon(R.drawable.logo);
-        builder.setContentTitle("내려야 해요!!!!");
+        builder.setContentTitle("목적지의 1km 이내에 진입하셨습니다. 내릴 준비하세요!!!!");
         builder.setContentText("내리셨다면 하차 알리미를 터치하여 기능을 꺼주세요");
 
         builder.setColor(Color.RED);
