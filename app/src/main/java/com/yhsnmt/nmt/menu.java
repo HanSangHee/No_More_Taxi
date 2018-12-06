@@ -1,30 +1,30 @@
 package com.yhsnmt.nmt;
 
 import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationListener;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.odsay.odsayandroidsdk.API;
 import com.odsay.odsayandroidsdk.ODsayData;
 import com.odsay.odsayandroidsdk.ODsayService;
@@ -66,10 +66,6 @@ public class menu extends AppCompatActivity {
         pref = getSharedPreferences("pref", MODE_PRIVATE);
         final String latit = pref.getString("latitude", null);
         final String longit = pref.getString("longitude", null);
-
-
-
-        System.out.println("데이터저장값" + latit);
 
 
         set.setOnClickListener(new View.OnClickListener() {
@@ -114,6 +110,17 @@ public class menu extends AppCompatActivity {
 
             public void onClick(View v) {
 
+                if (ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getBaseContext(), "위치정보 권한을 허용해 주세요.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else{
+
+                    // gps 켜져 있는지 확인 필요
+
+
+                }
+
                 if (tb1.isChecked()) {
 
                     if ((latit) == null) {
@@ -121,7 +128,9 @@ public class menu extends AppCompatActivity {
 
                     } else {
 
-                        tb1.setBackgroundDrawable(getResources().getDrawable(R.drawable.makon));
+                        tb1.setBackgroundDrawable(getResources().getDrawable(R.drawable.haon));
+
+
 
 
 
@@ -132,13 +141,19 @@ public class menu extends AppCompatActivity {
 
                     tb1.setBackgroundDrawable(
 
-                            getResources().getDrawable(R.drawable.makoff)
-
+                            getResources().getDrawable(R.drawable.haoff)
 
 
                     );
 
+
+
                 }
+
+
+
+
+
 
             }
 
@@ -175,9 +190,6 @@ public class menu extends AppCompatActivity {
                         tb2.setBackgroundDrawable(getResources().getDrawable(R.drawable.haon));
 
 
-
-
-
                         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, // 등록할 위치제공자
                                 100, // 통지사이의 최소 시간간격 (miliSecond)
                                 1, // 통지사이의 최소 변경거리 (m)
@@ -189,11 +201,6 @@ public class menu extends AppCompatActivity {
 
 
 
-
-                        System.out.println("목적지위도값 : " + latit);
-                        System.out.println("목적지경도값 : " + longit);
-                        System.out.println("출발지위도값 : " + sla);
-                        System.out.println("출발지위도값 : " + slo);
 
 
 
@@ -211,6 +218,7 @@ public class menu extends AppCompatActivity {
 
                     );
                     lm.removeUpdates(mLocationListener);  //  미수신할때는 반드시 자원해체를 해주어야 한다.
+                    removeNotification();
 
 
 
@@ -241,7 +249,6 @@ public class menu extends AppCompatActivity {
             sla = Double.toString(current_lat);
             slo = Double.toString(current_long);
 
-
             //Gps 위치제공자에 의한 위치변화. 오차범위가 좁다.
             //Network 위치제공자에 의한 위치변화
             //Network 위치는 Gps에 비해 정확도가 많이 떨어진다.
@@ -251,8 +258,13 @@ public class menu extends AppCompatActivity {
             final String latit = pref.getString("latitude", null);
             final String longit = pref.getString("longitude", null);
 
+            System.out.println("목적지 위도값 : " + latit);
+            System.out.println("목적지 위도값 : " + longit);
+            System.out.println("출발지 위도값 : " + sla);
+            System.out.println("출발지 경도값 : " + slo);
 
-            mODsayService.requestSearchPubTransPath(slo, sla, longit, latit,"","","", onResultCallbackListener);
+
+            mODsayService.requestSearchPubTransPath(slo, sla, longit, latit,"","","", onResultCallbackListener2);
 
         }
 
@@ -272,7 +284,7 @@ public class menu extends AppCompatActivity {
         }
 
     };
-    OnResultCallbackListener onResultCallbackListener = new OnResultCallbackListener() {
+    OnResultCallbackListener onResultCallbackListener1 = new OnResultCallbackListener() {
         @Override
         public void onSuccess(ODsayData oDsayData, API api) {
 
@@ -284,7 +296,10 @@ public class menu extends AppCompatActivity {
 
                     int Dist = Integer.parseInt(Distance);
 
-                    if (Dist < 500) {
+                    if (Dist < 3000) {
+
+                        for(int i=0; i<5; i++)
+                            createNotification();
                         // 알람 셋팅
                     }
 
@@ -294,6 +309,8 @@ public class menu extends AppCompatActivity {
             }
         }
 
+
+
         @Override
         public void onError(int i, String s, API api) {
             Log.d("Test", "Error");
@@ -301,6 +318,73 @@ public class menu extends AppCompatActivity {
             }
         }
     };
+
+
+    OnResultCallbackListener onResultCallbackListener2 = new OnResultCallbackListener() {
+        @Override
+        public void onSuccess(ODsayData oDsayData, API api) {
+
+
+            try {
+                if (api == API.SEARCH_PUB_TRANS_PATH) {
+                    String Distance = oDsayData.getJson().getJSONObject("result").getString("pointDistance");
+                    Log.d("원하는 값은", Distance);
+
+                    int Dist = Integer.parseInt(Distance);
+
+                    if (Dist < 3000) {
+
+                        for(int i=0; i<5; i++)
+                            createNotification();
+                        // 알람 셋팅
+                    }
+
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+
+        @Override
+        public void onError(int i, String s, API api) {
+            Log.d("Test", "Error");
+            if (api == API.SEARCH_PUB_TRANS_PATH) {
+            }
+        }
+    };
+
+
+    private void createNotification() {
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "default");
+
+
+        builder.setSmallIcon(R.drawable.logo);
+        builder.setContentTitle("내려야 해요!!!!");
+        builder.setContentText("내리셨다면 하차 알리미를 터치하여 기능을 꺼주세요");
+
+        builder.setColor(Color.RED);
+        // 사용자가 탭을 클릭하면 자동 제거
+        builder.setAutoCancel(true);
+
+        // 알림 표시
+        NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationManager.createNotificationChannel(new NotificationChannel("default", "기본 채널", NotificationManager.IMPORTANCE_DEFAULT));
+        }
+
+        // id값은
+        // 정의해야하는 각 알림의 고유한 int값
+        notificationManager.notify(1, builder.build());
+    }
+
+    private void removeNotification() {
+        // Notification 제거
+        NotificationManagerCompat.from(this).cancel(1);
+    }
+
 
 
 
