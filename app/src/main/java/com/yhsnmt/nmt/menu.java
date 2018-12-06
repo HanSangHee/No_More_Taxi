@@ -13,6 +13,7 @@ import android.location.LocationManager;
 import android.location.LocationListener;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
@@ -25,6 +26,11 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.odsay.odsayandroidsdk.API;
 import com.odsay.odsayandroidsdk.ODsayData;
 import com.odsay.odsayandroidsdk.ODsayService;
@@ -58,6 +64,8 @@ public class menu extends AppCompatActivity {
         mODsayService = ODsayService.init(this, a);
         mODsayService.setReadTimeout(5000);
         mODsayService.setConnectionTimeout(5000);
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
 
         final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -129,6 +137,24 @@ public class menu extends AppCompatActivity {
                     } else {
 
                         tb1.setBackgroundDrawable(getResources().getDrawable(R.drawable.haon));
+//                        mFusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+//                            @Override
+//                            public void onSuccess(Location location) {
+//
+//                                if (location != null) {
+//                                    //logic to handle location object
+//                                    Double latitude = location.getLatitude();
+//                                    Double longitude = location.getLongitude();
+//                                    sla = Double.toString(latitude);
+//                                    slo = Double.toString(longitude);
+//
+//                                    mODsayService.requestSearchPubTransPath(slo, sla, longit, latit,"","","1", onResultCallbackListener1);
+//
+//
+//
+//                                }
+//                            }
+//                        });
 
 
 
@@ -217,6 +243,7 @@ public class menu extends AppCompatActivity {
 
 
                     );
+
                     lm.removeUpdates(mLocationListener);  //  미수신할때는 반드시 자원해체를 해주어야 한다.
                     removeNotification();
 
@@ -259,12 +286,12 @@ public class menu extends AppCompatActivity {
             final String longit = pref.getString("longitude", null);
 
             System.out.println("목적지 위도값 : " + latit);
-            System.out.println("목적지 위도값 : " + longit);
+            System.out.println("목적지 경도값 : " + longit);
             System.out.println("출발지 위도값 : " + sla);
             System.out.println("출발지 경도값 : " + slo);
 
 
-            mODsayService.requestSearchPubTransPath(slo, sla, longit, latit,"","","", onResultCallbackListener2);
+            mODsayService.requestSearchPubTransPath(slo, sla, longit, latit,"","","", onResultCallbackListener);
 
         }
 
@@ -284,7 +311,37 @@ public class menu extends AppCompatActivity {
         }
 
     };
-    OnResultCallbackListener onResultCallbackListener1 = new OnResultCallbackListener() {
+//    OnResultCallbackListener onResultCallbackListener1 = new OnResultCallbackListener() {
+//        @Override
+//        public void onSuccess(ODsayData oDsayData, API api) {
+//
+//
+//            try {
+//                if (api == API.SEARCH_PUB_TRANS_PATH) {
+//                    String Distance = oDsayData.getJson().getJSONObject("result").getJSONArray("path").getString(0);
+//
+//                    Log.d("점검", Distance);
+//
+//
+//
+//                }
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//
+//
+//        @Override
+//        public void onError(int i, String s, API api) {
+//            Log.d("Test", "Error");
+//            if (api == API.SEARCH_PUB_TRANS_PATH) {
+//            }
+//        }
+//    };
+
+
+    OnResultCallbackListener onResultCallbackListener = new OnResultCallbackListener() {
         @Override
         public void onSuccess(ODsayData oDsayData, API api) {
 
@@ -293,15 +350,6 @@ public class menu extends AppCompatActivity {
                 if (api == API.SEARCH_PUB_TRANS_PATH) {
                     String Distance = oDsayData.getJson().getJSONObject("result").getString("pointDistance");
                     Log.d("원하는 값은", Distance);
-
-                    int Dist = Integer.parseInt(Distance);
-
-                    if (Dist < 3000) {
-
-                        for(int i=0; i<5; i++)
-                            createNotification();
-                        // 알람 셋팅
-                    }
 
                 }
             } catch (JSONException e) {
@@ -316,42 +364,9 @@ public class menu extends AppCompatActivity {
             Log.d("Test", "Error");
             if (api == API.SEARCH_PUB_TRANS_PATH) {
             }
-        }
-    };
 
-
-    OnResultCallbackListener onResultCallbackListener2 = new OnResultCallbackListener() {
-        @Override
-        public void onSuccess(ODsayData oDsayData, API api) {
-
-
-            try {
-                if (api == API.SEARCH_PUB_TRANS_PATH) {
-                    String Distance = oDsayData.getJson().getJSONObject("result").getString("pointDistance");
-                    Log.d("원하는 값은", Distance);
-
-                    int Dist = Integer.parseInt(Distance);
-
-                    if (Dist < 3000) {
-
-                        for(int i=0; i<5; i++)
-                            createNotification();
-                        // 알람 셋팅
-                    }
-
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-
-
-        @Override
-        public void onError(int i, String s, API api) {
-            Log.d("Test", "Error");
-            if (api == API.SEARCH_PUB_TRANS_PATH) {
-            }
+            for(int a=0; a<5; a++)
+                createNotification();
         }
     };
 
@@ -391,6 +406,3 @@ public class menu extends AppCompatActivity {
 
 
 }
-
-
-
