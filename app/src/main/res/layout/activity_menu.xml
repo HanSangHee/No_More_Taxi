@@ -59,18 +59,18 @@
         android:layout_height="59dp"
         android:layout_above="@+id/imageView3"
         android:layout_marginBottom="-66dp"
-        android:layout_toEndOf="@+id/tb1"
+        android:layout_toEndOf="@+id/tb2"
 
         android:background="@drawable/settings"
-        android:layout_toRightOf="@+id/tb1" />
+        android:layout_toRightOf="@+id/tb2" />
 
     <Button
         android:id="@+id/mail"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_alignTop="@+id/setting"
-        android:layout_toStartOf="@+id/tb1"
+        android:layout_toStartOf="@+id/tb2"
         android:background="@android:drawable/ic_dialog_email"
-        android:layout_toLeftOf="@+id/tb1" />
+        android:layout_toLeftOf="@+id/tb2" />
 
 </RelativeLayout>

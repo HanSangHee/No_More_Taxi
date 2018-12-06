@@ -10,6 +10,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.LocationManager;
 import android.location.Location;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -108,11 +109,7 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
                                 mMap.addMarker(mOptions3);
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(b, 15));
 
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
+
 
                                 String latit = Double.toString(latitude);
                                 String longit = Double.toString(longitude);
@@ -121,9 +118,14 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
                                 editor.putString("latitude", latit);
                                 editor.putString("longitude", longit);
                                 editor.commit(); //완료한다.
-                                Intent intent = new Intent(getApplicationContext(), menu.class);
-                                startActivity(intent);
-
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    public void run() {
+                                        Intent intent = new Intent(getApplicationContext(), menu.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                }, 2000);
                                 // 위도 경도 정보를 4-ㄱ ,4-ㄴ으로 전달(목적 클래스 재지정 필요)
 
                             }
@@ -158,11 +160,8 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
                 // 마커(핀) 추가
                 googleMap.addMarker(mOptions);
 
-                try {
-                    Thread.sleep(1500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+
+
 
                 String latit = Double.toString(latitude);
                 String longit = Double.toString(longitude);
@@ -171,8 +170,16 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
                 editor.putString("latitude", latit);
                 editor.putString("longitude", longit);
                 editor.commit(); //완료한다.
-                Intent intent = new Intent(getApplicationContext(), menu.class);
-                startActivity(intent);
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        Intent intent = new Intent(getApplicationContext(), menu.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                }, 2000);
+
 
                 // 위도 경도 정보를 4-ㄱ ,4-ㄴ으로 전달(목적 클래스 재지정 필요)
 
@@ -222,11 +229,7 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
                         // 해당 좌표로 화면 줌
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 15));
 
-                        try {
-                            Thread.sleep(1500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+
 
                         String latit = latitude;
                         String longit = longitude;
@@ -235,8 +238,14 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
                         editor.putString("latitude", latit);
                         editor.putString("longitude", longit);
                         editor.commit(); //완료한다.
-                        Intent intent = new Intent(getApplicationContext(), menu.class);
-                        startActivity(intent);
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            public void run() {
+                                Intent intent = new Intent(getApplicationContext(), menu.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }, 2000);
 
                         // 위도 경도 정보를 4-ㄱ ,4-ㄴ으로 전달(목적 클래스 재지정 필요)
 
