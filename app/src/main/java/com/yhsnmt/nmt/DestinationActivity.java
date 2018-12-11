@@ -31,6 +31,11 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,6 +58,15 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
     private double latitude = 0, longitude = 0;
     private FusedLocationProviderClient mFusedLocationClient;
     private ImageButton current;
+    FirebaseDatabase DB = FirebaseDatabase.getInstance();
+    DatabaseReference server_latit  = DB.getReference("server_latit");
+    DatabaseReference server_longit = DB.getReference("server_longit");
+
+
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +75,7 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
         editText = (EditText) findViewById(R.id.editText);
         button = (Button) findViewById(R.id.button);
         current= (ImageButton) findViewById(R.id.current);
+
 
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -118,6 +133,9 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
                                 editor.putString("latitude", latit);
                                 editor.putString("longitude", longit);
                                 editor.commit(); //완료한다.
+                                server_latit.setValue(latit);
+                                server_longit.setValue(longit);
+
                                 Handler handler = new Handler();
                                 handler.postDelayed(new Runnable() {
                                     public void run() {
@@ -170,7 +188,8 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
                 editor.putString("latitude", latit);
                 editor.putString("longitude", longit);
                 editor.commit(); //완료한다.
-
+                server_latit.setValue(latit);
+                server_longit.setValue(longit);
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     public void run() {
@@ -238,6 +257,8 @@ public class DestinationActivity extends FragmentActivity implements OnMapReadyC
                         editor.putString("latitude", latit);
                         editor.putString("longitude", longit);
                         editor.commit(); //완료한다.
+                        server_latit.setValue(latit);
+                        server_longit.setValue(longit);
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             public void run() {

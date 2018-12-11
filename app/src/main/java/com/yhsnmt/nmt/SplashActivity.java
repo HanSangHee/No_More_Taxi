@@ -15,10 +15,11 @@ import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.view.Menu;
 
+import javax.security.auth.login.LoginException;
+
 
 public class SplashActivity extends Activity {
 
-    LocationManager manager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,7 +31,7 @@ public class SplashActivity extends Activity {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                Intent intent = new Intent(getBaseContext(), menu.class);
+                Intent intent = new Intent(getBaseContext(), LoginActivity.class);
                 startActivity(intent);
                 finish();
             }
