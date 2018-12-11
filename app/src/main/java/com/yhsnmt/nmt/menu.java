@@ -14,6 +14,7 @@ import android.location.LocationListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
@@ -31,6 +32,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.odsay.odsayandroidsdk.API;
 import com.odsay.odsayandroidsdk.ODsayData;
 import com.odsay.odsayandroidsdk.ODsayService;
@@ -48,6 +54,11 @@ public class menu extends AppCompatActivity {
     String a = "CjI+3L5fsV83FFBgkif3WjrvVKFCgsajnJxD9jYuRSU";
     private String slo = "", sla = "";
     ODsayService mODsayService;
+
+    FirebaseDatabase DB = FirebaseDatabase.getInstance();
+    DatabaseReference server_latit  = DB.getReference("server_latit");
+    DatabaseReference server_longit = DB.getReference("server_longit");
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,6 +79,9 @@ public class menu extends AppCompatActivity {
 
 
         final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+
+
 
 
         SharedPreferences pref;
@@ -281,6 +295,7 @@ public class menu extends AppCompatActivity {
             //Network 위치제공자에 의한 위치변화
             //Network 위치는 Gps에 비해 정확도가 많이 떨어진다.
 
+
             SharedPreferences pref;
             pref = getSharedPreferences("pref", MODE_PRIVATE);
             final String latit = pref.getString("latitude", null);
@@ -290,6 +305,33 @@ public class menu extends AppCompatActivity {
             System.out.println("목적지 경도값 : " + longit);
             System.out.println("출발지 위도값 : " + sla);
             System.out.println("출발지 경도값 : " + slo);
+
+//            server_latit.addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                    String s_latit = dataSnapshot.getValue(String.class);
+//                }
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                }
+//            });
+//
+//            server_longit.addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                    String s_longit = dataSnapshot.getValue(String.class);
+//
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                }
+//            });
+//
+//            String slaa = server_latit.;
+//            System.out.println("과연과연 " + slaa);
 
 
             mODsayService.requestSearchPubTransPath(slo, sla, longit, latit,"","","1", onResultCallbackListener);
