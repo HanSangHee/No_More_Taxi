@@ -1,12 +1,14 @@
 package com.yhsnmt.nmt;
 
 import android.Manifest;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
@@ -44,16 +46,32 @@ import com.odsay.odsayandroidsdk.OnResultCallbackListener;
 
 import org.json.JSONException;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Timer;
+import java.util.concurrent.TimeUnit;
+
 
 public class menu extends AppCompatActivity {
 
 
     private FusedLocationProviderClient mFusedLocationClient;
 
-
     String a = "CjI+3L5fsV83FFBgkif3WjrvVKFCgsajnJxD9jYuRSU";
-    private String slo = "", sla = "";
+    private String slo = "", sla = ""; //
+    private String s_latit = "", s_longit = ""; // 서버 저장 값 받아올 변수들
+
+
     ODsayService mODsayService;
+
+
+    private String result1;
+    private String result2;
+    private String result3 = "";
+    private String result4 = "";
+
+    private String makonlongit;
+    private String makonlatit;
 
     FirebaseDatabase DB = FirebaseDatabase.getInstance();
     DatabaseReference server_latit  = DB.getReference("server_latit");
@@ -80,14 +98,11 @@ public class menu extends AppCompatActivity {
 
         final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-
-
-
-
         SharedPreferences pref;
         pref = getSharedPreferences("pref", MODE_PRIVATE);
         final String latit = pref.getString("latitude", null);
         final String longit = pref.getString("longitude", null);
+
 
 
         set.setOnClickListener(new View.OnClickListener() {
@@ -140,17 +155,21 @@ public class menu extends AppCompatActivity {
 
                     // gps 켜져 있는지 확인 필요
 
-
                 }
+
 
                 if (tb1.isChecked()) {
 
-                    if ((latit) == null) {
+
+
+                    if ((latit) == null && server_latit == null) {
                         Toast.makeText(getBaseContext(), "우측 상단 설정을 누르고 목적지를 설정해주세요", Toast.LENGTH_SHORT).show();
 
                     } else {
 
                         tb1.setBackgroundDrawable(getResources().getDrawable(R.drawable.makon));
+                        Notify_makon();
+
                         mFusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                             @Override
                             public void onSuccess(Location location) {
@@ -159,20 +178,52 @@ public class menu extends AppCompatActivity {
                                     //logic to handle location object
                                     Double latitude = location.getLatitude();
                                     Double longitude = location.getLongitude();
-                                    sla = Double.toString(latitude);
-                                    slo = Double.toString(longitude);
+                                    makonlatit = Double.toString(latitude);
+                                    makonlongit = Double.toString(longitude);
 
-                                    mODsayService.requestSearchPubTransPath(slo, sla, longit, latit,"","","1", onResultCallbackListener1);
+                                    server_latit.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            s_latit = dataSnapshot.getValue(String.class);
+                                        }
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+                                    server_longit.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            s_longit = dataSnapshot.getValue(String.class);
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
 
 
+                                    });
 
+                                    if(longit == null) {
+                                        mODsayService.requestSearchPubTransPath(makonlongit, makonlatit, s_longit, s_latit, "", "", "1", onResultCallbackListener1);
+                                    }
+                                    else
+                                        mODsayService.requestSearchPubTransPath(makonlongit, makonlatit, longit, latit, "", "", "1",onResultCallbackListener1);
                                 }
-                            }
+
+
+
+
+
+
+
+
+
+                        }
                         });
-
-
-
-
 
                     }
 
@@ -182,6 +233,7 @@ public class menu extends AppCompatActivity {
                     tb1.setBackgroundDrawable(
 
                             getResources().getDrawable(R.drawable.makoff)
+
 
 
                     );
@@ -222,27 +274,24 @@ public class menu extends AppCompatActivity {
 
                 if (tb2.isChecked()) {
 
-                    if ((latit) == null) {
+                    if ((latit) == null && server_latit == null) {
                         Toast.makeText(getBaseContext(), "우측 상단 설정을 누르고 목적지를 설정해주세요", Toast.LENGTH_SHORT).show();
 
                     } else {
 
                         tb2.setBackgroundDrawable(getResources().getDrawable(R.drawable.haon));
 
+                        Notify_haon();
+
 
                         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, // 등록할 위치제공자
-                                1000, // 통지사이의 최소 시간간격 (miliSecond)
-                                1, // 통지사이의 최소 변경거리 (m)
+                                10000, // 통지사이의 최소 시간간격 (miliSecond)
+                                50, // 통지사이의 최소 변경거리 (m)
                                 mLocationListener);
                         lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, // 등록할 위치제공자
-                                1000, // 통지사이의 최소 시간간격 (miliSecond)
-                                1, // 통지사이의 최소 변경거리 (m)
+                                10000, // 통지사이의 최소 시간간격 (miliSecond)
+                                50, // 통지사이의 최소 변경거리 (m)
                                 mLocationListener);
-
-
-
-
-
 
 
 
@@ -288,7 +337,7 @@ public class menu extends AppCompatActivity {
             double current_long = location.getLongitude(); //경도
             double current_lat = location.getLatitude();   //위도
 
-            sla = Double.toString(current_lat);
+            sla = Double.toString(current_lat); // 출발지 검색
             slo = Double.toString(current_long);
 
             //Gps 위치제공자에 의한 위치변화. 오차범위가 좁다.
@@ -298,44 +347,43 @@ public class menu extends AppCompatActivity {
 
             SharedPreferences pref;
             pref = getSharedPreferences("pref", MODE_PRIVATE);
-            final String latit = pref.getString("latitude", null);
+            final String latit = pref.getString("latitude", null); //목적지 저장 값 레퍼런스
             final String longit = pref.getString("longitude", null);
 
-            System.out.println("목적지 위도값 : " + latit);
-            System.out.println("목적지 경도값 : " + longit);
-            System.out.println("출발지 위도값 : " + sla);
-            System.out.println("출발지 경도값 : " + slo);
 
-//            server_latit.addValueEventListener(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                    String s_latit = dataSnapshot.getValue(String.class);
-//                }
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                }
-//            });
-//
-//            server_longit.addValueEventListener(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                    String s_longit = dataSnapshot.getValue(String.class);
-//
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                }
-//            });
-//
-//            String slaa = server_latit.;
-//            System.out.println("과연과연 " + slaa);
+            server_latit.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    s_latit = dataSnapshot.getValue(String.class); //목적지 저장 값 서버
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+            server_longit.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    s_longit = dataSnapshot.getValue(String.class);
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
 
 
-            mODsayService.requestSearchPubTransPath(slo, sla, longit, latit,"","","1", onResultCallbackListener);
+            });
 
+
+
+            if(longit == null) {
+                mODsayService.requestSearchPubTransPath(slo, sla, s_longit, s_latit, "", "", "1", onResultCallbackListener);
+            }
+            else
+                mODsayService.requestSearchPubTransPath(slo, sla, longit, latit, "", "", "1",onResultCallbackListener);
         }
 
         public void onProviderDisabled(String provider) {
@@ -354,6 +402,48 @@ public class menu extends AppCompatActivity {
         }
 
     };
+
+
+    OnResultCallbackListener onResultCallbackListener2 = new OnResultCallbackListener() {
+        @Override
+        public void onSuccess(ODsayData oDsayData, API api) {
+
+
+            try {
+                if (api == API.SUBWAY_PATH) {
+                    int totaltime = oDsayData.getJson().getJSONObject("result").getInt("globalTravelTime");
+
+                    //String totaltime = String.valueOf(c);
+
+                    int minus_second = 15*60 + totaltime;
+
+
+
+
+
+                    for (int i=0; i<500; i++)
+                        creation();
+
+
+
+
+
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onError(int i, String s, API api) {
+            Log.d("Test", "Error");
+            if (api == API.SUBWAY_PATH) {
+            }
+            notsofarnoti();
+        }
+    };
+
+
     OnResultCallbackListener onResultCallbackListener1 = new OnResultCallbackListener() {
         @Override
         public void onSuccess(ODsayData oDsayData, API api) {
@@ -365,17 +455,30 @@ public class menu extends AppCompatActivity {
                     String station = oDsayData.getJson().getJSONObject("result").getJSONArray("path").getString(0);
                     String target1 = "firstStartStation";
                     String target2 = "lastEndStation\":\"";
+                    String target3 = "startID\":";
+                    String target4 = "endID\":";
                     int target_num1 = station.indexOf(target1)+20;
                     int target_num2 = station.indexOf("\",\"lastEnd");
                     int target_num3 = station.indexOf(target2)+17;
                     int target_num4 = station.indexOf("\",\"totalWalkTime\":");
-                    String result1 = station.substring(target_num1, target_num2);
-                    String result2 = station.substring(target_num3, target_num4);
+
+                    int target_num5 = station.indexOf(target3)+9;
+                    int target_num6 = station.indexOf(",\"startName\":");
+                    int target_num7 = station.indexOf(target4)+7;
+                    int target_num8 = station.indexOf(",\"endNam");
+
+                    result1 = station.substring(target_num1, target_num2);
+                    result2 = station.substring(target_num3, target_num4);
+                    result3 = station.substring(target_num5, target_num6); // 출발역 지하철역 ID
+                    result4 = station.substring(target_num7, target_num8); // 도착역 지하철역 ID
+
+                    System.out.println("result... : " + result3);
+                    System.out.println("result... : " + result4);
+
+                    mODsayService.requestSubwayPath("1000", result3, result4, "1" ,onResultCallbackListener2);
 
 
 
-                    Log.d("나와라얍1", result1);
-                    Log.d("나와라얍2", result2);
 
 
 
@@ -419,10 +522,59 @@ public class menu extends AppCompatActivity {
             if (api == API.SEARCH_PUB_TRANS_PATH) {
             }
 
-            for(int a=0; a<5; a++)
+            for(int a=0; a<10; a++)
                 createNotification();
         }
     };
+
+    private void Notify_makon() {
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "default");
+
+
+        builder.setSmallIcon(R.drawable.logo);
+        builder.setContentTitle("막차 알리미가 실행되었습니다.");
+        builder.setContentText("막차 15분 전에 알려드릴게요");
+
+        builder.setColor(Color.RED);
+        // 사용자가 탭을 클릭하면 자동 제거
+        builder.setAutoCancel(true);
+
+        // 알림 표시
+        NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationManager.createNotificationChannel(new NotificationChannel("default", "기본 채널", NotificationManager.IMPORTANCE_DEFAULT));
+        }
+
+        // id값은
+        // 정의해야하는 각 알림의 고유한 int값
+        notificationManager.notify(1, builder.build());
+    }
+
+    private void Notify_haon() {
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "default");
+
+
+        builder.setSmallIcon(R.drawable.logo);
+        builder.setContentTitle("하차 알리미가 실행되었습니다.");
+        builder.setContentText("목적지에 가까워지면 알려드릴게요");
+
+        builder.setColor(Color.RED);
+        // 사용자가 탭을 클릭하면 자동 제거
+        builder.setAutoCancel(true);
+
+        // 알림 표시
+        NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationManager.createNotificationChannel(new NotificationChannel("default", "기본 채널", NotificationManager.IMPORTANCE_DEFAULT));
+        }
+
+        // id값은
+        // 정의해야하는 각 알림의 고유한 int값
+        notificationManager.notify(4, builder.build());
+    }
+
 
 
     private void createNotification() {
@@ -446,13 +598,64 @@ public class menu extends AppCompatActivity {
 
         // id값은
         // 정의해야하는 각 알림의 고유한 int값
-        notificationManager.notify(1, builder.build());
+        notificationManager.notify(3, builder.build());
     }
+
+
+    private void notsofarnoti() {
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "default");
+
+
+        builder.setSmallIcon(R.drawable.logo);
+        builder.setContentTitle("목적지가 너무 가까워요");
+        builder.setContentText("걸어가셔도 될 것 같은데요?");
+
+        builder.setColor(Color.RED);
+        // 사용자가 탭을 클릭하면 자동 제거
+        builder.setAutoCancel(true);
+
+        // 알림 표시
+        NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationManager.createNotificationChannel(new NotificationChannel("default", "기본 채널", NotificationManager.IMPORTANCE_DEFAULT));
+        }
+
+        // id값은
+        // 정의해야하는 각 알림의 고유한 int값
+        notificationManager.notify(45, builder.build());
+    }
+
+    private void creation() {
+        String a = "가장가까운 승차하실 지하철 역은 " + result1  + "역 입니다.\n" + "하차하실 역은 " + result2 + "역 입니다.\n" + "알람을 멈추려면 막차 알리미를 종료해 주세요";
+        // 요약 정보.
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "default");
+        builder.setSmallIcon(R.drawable.logo);
+        builder.setContentTitle("막차 15분 전 입니다 준비하세요.");
+        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(a));
+        builder.setContentText(a);
+        builder.setColor(Color.RED);
+        // 사용자가 탭을 클릭하면 자동 제거
+        builder.setAutoCancel(true);
+
+        NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationManager.createNotificationChannel(new NotificationChannel("default", "기본 채널", NotificationManager.IMPORTANCE_DEFAULT));
+        }
+
+        // id값은
+        // 정의해야하는 각 알림의 고유한 int값
+        notificationManager.notify(111, builder.build());
+    }
+
+
 
     private void removeNotification() {
         // Notification 제거
-        NotificationManagerCompat.from(this).cancel(1);
+        NotificationManagerCompat.from(this).cancel(3);
     }
+
+
 
 
 
