@@ -49,6 +49,7 @@ import org.json.JSONException;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
@@ -431,13 +432,34 @@ public class menu extends AppCompatActivity {
 
                     int minus_minute = 20*60 + totaltime;
 
-                    Intent intent = new Intent(getApplicationContext(), NearStartStation.class);
-                    startActivity(intent);
-                    finish();
 
-                    for(int i=0; i<300 ; i++) {
-                        creation();
-                    }
+
+
+                    final SimpleDateFormat dateFormat= new SimpleDateFormat("HH:mm", Locale.ENGLISH);
+
+
+
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            String cDateTime= dateFormat.format(new Date());
+                            System.out.println("time : " + cDateTime);
+                            if (cDateTime.equals("22:11")) {
+
+                                for (int i = 0; i < 300; i++) {
+                                    creation();
+                                }
+                                Intent intent = new Intent(getApplicationContext(), NearStartStation.class);
+                                startActivity(intent);
+                            }
+
+
+
+                        }
+                    }, 1000*60*2);
+
+
+
 
 
 
@@ -492,6 +514,7 @@ public class menu extends AppCompatActivity {
                     SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
                     SharedPreferences.Editor editor = pref.edit();// editor에 put 하기
                     editor.putString("start_station_name", result1);
+                    System.out.println("호아아암 : " +result3);
                     editor.putString("startID", result3);
                     editor.commit(); //완료한다.
 

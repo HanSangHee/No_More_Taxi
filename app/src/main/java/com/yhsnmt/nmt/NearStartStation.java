@@ -60,6 +60,8 @@ public class NearStartStation extends FragmentActivity implements OnMapReadyCall
     private GoogleMap mMap;
     private Geocoder geocoder;
     private FusedLocationProviderClient mFusedLocationClient;
+    private Double xs;
+    private Double ys;
     String a = "CjI+3L5fsV83FFBgkif3WjrvVKFCgsajnJxD9jYuRSU";
 
     ODsayService mODsayService;
@@ -131,7 +133,7 @@ public class NearStartStation extends FragmentActivity implements OnMapReadyCall
         mOptions2.position(a);
         mOptions2.title("현위치");
         mMap.addMarker(mOptions2);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(a, 20));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(a, 16));
 
 
 
@@ -144,21 +146,26 @@ public class NearStartStation extends FragmentActivity implements OnMapReadyCall
         public void onSuccess(ODsayData oDsayData, API api) {
 
 
+
+
             try {
                 if (api == API.SUBWAY_STATION_INFO) {
-                    Double x = oDsayData.getJson().getJSONObject("result").getDouble("x");
-                    Double y = oDsayData.getJson().getJSONObject("result").getDouble("y");
+
+
+                    String hi = oDsayData.getJson().getJSONObject("result").getString("stationName");
+                    xs= oDsayData.getJson().getJSONObject("result").getDouble("x");
+                    ys = oDsayData.getJson().getJSONObject("result").getDouble("y");
 
 
 
-                    SharedPreferences pref;
-                    pref = getSharedPreferences("pref", MODE_PRIVATE);
+
                     MarkerOptions mOptions3 = new MarkerOptions(); // 가까운 역
-                    final String station_name = pref.getString("start_station_name", null); //안될수도
-                    mOptions3.title(station_name+"역");
-                    LatLng b = new LatLng(y, x);
+                    mOptions3.title("승차하실 " +hi+"역");
+                    LatLng b = new LatLng(ys, xs);
                     mOptions3.position(b);
                     mMap.addMarker(mOptions3);
+
+
 
                 }
             } catch (JSONException e) {
