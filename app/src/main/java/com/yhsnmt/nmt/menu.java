@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -76,6 +77,8 @@ public class menu extends AppCompatActivity {
     FirebaseDatabase DB = FirebaseDatabase.getInstance();
     DatabaseReference server_latit  = DB.getReference("server_latit");
     DatabaseReference server_longit = DB.getReference("server_longit");
+
+
 
 
     @Override
@@ -178,8 +181,16 @@ public class menu extends AppCompatActivity {
                                     //logic to handle location object
                                     Double latitude = location.getLatitude();
                                     Double longitude = location.getLongitude();
+
+
                                     makonlatit = Double.toString(latitude);
                                     makonlongit = Double.toString(longitude);
+
+                                    SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = pref.edit();// editor에 put 하기
+                                    editor.putString("start_latitude", makonlatit);
+                                    editor.putString("start_longitude", makonlongit);
+                                    editor.commit(); //완료한다.
 
                                     server_latit.addValueEventListener(new ValueEventListener() {
                                         @Override
@@ -415,14 +426,18 @@ public class menu extends AppCompatActivity {
 
                     //String totaltime = String.valueOf(c);
 
-                    int minus_second = 15*60 + totaltime;
+                    System.out.println("걸리는 시간 : " + totaltime);
 
 
+                    int minus_minute = 20*60 + totaltime;
 
+                    Intent intent = new Intent(getApplicationContext(), NearStartStation.class);
+                    startActivity(intent);
+                    finish();
 
-
-                    for (int i=0; i<500; i++)
+                    for(int i=0; i<300 ; i++) {
                         creation();
+                    }
 
 
 
@@ -467,10 +482,19 @@ public class menu extends AppCompatActivity {
                     int target_num7 = station.indexOf(target4)+7;
                     int target_num8 = station.indexOf(",\"endNam");
 
+
                     result1 = station.substring(target_num1, target_num2);
                     result2 = station.substring(target_num3, target_num4);
                     result3 = station.substring(target_num5, target_num6); // 출발역 지하철역 ID
                     result4 = station.substring(target_num7, target_num8); // 도착역 지하철역 ID
+
+
+                    SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();// editor에 put 하기
+                    editor.putString("start_station_name", result1);
+                    editor.putString("startID", result3);
+                    editor.commit(); //완료한다.
+
 
                     System.out.println("result... : " + result3);
                     System.out.println("result... : " + result4);
@@ -629,6 +653,10 @@ public class menu extends AppCompatActivity {
     private void creation() {
         String a = "가장가까운 승차하실 지하철 역은 " + result1  + "역 입니다.\n" + "하차하실 역은 " + result2 + "역 입니다.\n" + "알람을 멈추려면 막차 알리미를 종료해 주세요";
         // 요약 정보.
+
+
+
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "default");
         builder.setSmallIcon(R.drawable.logo);
         builder.setContentTitle("막차 15분 전 입니다 준비하세요.");
@@ -637,6 +665,8 @@ public class menu extends AppCompatActivity {
         builder.setColor(Color.RED);
         // 사용자가 탭을 클릭하면 자동 제거
         builder.setAutoCancel(true);
+
+
 
         NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
