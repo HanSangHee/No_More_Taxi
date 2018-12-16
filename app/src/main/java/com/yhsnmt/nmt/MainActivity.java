@@ -17,7 +17,7 @@ import com.odsay.odsayandroidsdk.OnResultCallbackListener;
 import org.json.JSONException;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity { ////// 안쓰는 페이지 삭제시 런타임 에러
 
 
 

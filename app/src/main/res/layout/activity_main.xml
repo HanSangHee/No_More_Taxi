@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+    <!--안쓰는 액티비티 없으면 런타임 에러-->
 
     <TextView
         android:id="@+id/textView"

@@ -26,8 +26,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:layout_marginBottom="12dp"
+            android:layout_marginStart="19dp"
             android:text="찾기" />
 
         <ImageButton
@@ -36,10 +37,10 @@
             android:layout_height="50dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:background="@drawable/current"
             android:scaleType="fitXY"
-            android:visibility="visible"
-            android:layout_alignParentRight="true" />
+            android:visibility="visible" />
 
     </RelativeLayout>
 

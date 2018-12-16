@@ -297,12 +297,12 @@ public class menu extends AppCompatActivity {
 
 
                         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, // 등록할 위치제공자
-                                10000, // 통지사이의 최소 시간간격 (miliSecond)
-                                50, // 통지사이의 최소 변경거리 (m)
+                                1000, // 통지사이의 최소 시간간격 (miliSecond)
+                                10, // 통지사이의 최소 변경거리 (m)
                                 mLocationListener);
                         lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, // 등록할 위치제공자
-                                10000, // 통지사이의 최소 시간간격 (miliSecond)
-                                50, // 통지사이의 최소 변경거리 (m)
+                                1000, // 통지사이의 최소 시간간격 (miliSecond)
+                                10, // 통지사이의 최소 변경거리 (m)
                                 mLocationListener);
 
 
@@ -430,7 +430,7 @@ public class menu extends AppCompatActivity {
                     System.out.println("걸리는 시간 : " + totaltime);
 
 
-                    int minus_minute = 20*60 + totaltime;
+                    int minus_minute = 15*60 + totaltime; // 막차 15분 전에 울려야 함으로 빼줄 값 필요
 
 
 
@@ -438,25 +438,29 @@ public class menu extends AppCompatActivity {
                     final SimpleDateFormat dateFormat= new SimpleDateFormat("HH:mm", Locale.ENGLISH);
 
 
+/// 토요일 일요일 평일 구분 해야 함.
 
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        public void run() {
-                            String cDateTime= dateFormat.format(new Date());
-                            System.out.println("time : " + cDateTime);
-                            if (cDateTime.equals("22:11")) {
+                    String cDateTime= dateFormat.format(new Date());
+                    System.out.println("time : " + cDateTime);
 
-                                for (int i = 0; i < 300; i++) {
-                                    creation();
-                                }
-                                Intent intent = new Intent(getApplicationContext(), NearStartStation.class);
-                                startActivity(intent);
-                            }
+                    for (int i = 0; i < 300; i++) {
+                        creation();
 
-
-
-                        }
-                    }, 1000*60*2);
+                        Intent intent = new Intent(getApplicationContext(), NearStartStation.class);
+                        startActivity(intent);
+                        finish();
+                    }
+//                    Handler handler = new Handler();
+//                    handler.postDelayed(new Runnable() {
+//                        public void run() {
+//
+//
+//
+//
+//
+//
+//                        }
+//                    }, 1000*60*1);
 
 
 
